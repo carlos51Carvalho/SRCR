@@ -17,6 +17,14 @@
 :- dynamic vacinacao_covid/5.
 
 % ----------------------------------------------------------------------
+% Fases de Vacinação
+% ----------------------------------------------------------------------
+
+primeira_fase().
+segunda_fase().
+terceira_fase().
+
+% ----------------------------------------------------------------------
 % Utente: Idutente,NºSegSocial, Nome, Data_Nasc, Email, Telefone, Morada,
 %           Profissão, [Doenças_Crónicas], IdCentroSaúde -> {V,F}
 % ----------------------------------------------------------------------
