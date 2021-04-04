@@ -34,7 +34,7 @@ utente(1,123123123,"luis","02-02-2000","teste@gmail.com",911222333,"braga",
 
 registaUtente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
 
-removeUtente(ID):- involucao(utente(ID,_,_,_,_,_,_,_,_,_)).
+% removeUtente(ID):- involucao(utente(ID,_,_,_,_,_,_,_,_,_)).
 
 % ----------------------------------------------------------------------
 % centro_saúde: Idcentro, Nome, Morada, Telefone, Email -> {V,F}
@@ -44,7 +44,7 @@ centro_saude(1,bragaHospital,braga,966777888,"braga@hospital.com").
 
 registaCentroSaude(ID,N,M,T,E):- evolucao(centro_saude(ID,N,M,T,E)).
 
-removeCentroSaude(ID):- involucao(centro_saude(ID,_,_,_,_)).
+% removeCentroSaude(ID):- involucao(centro_saude(ID,_,_,_,_)).
 
 % ----------------------------------------------------------------------
 % staff: Idstaff, Idcentro, Nome, email -> {V,F}
@@ -54,7 +54,7 @@ staff(1,1,enfermeiro1,"enfermeiro1@hospital.com").
 
 registaStaff(IDS,IDC,N,E):- evolucao(staff(IDS,IDC,N,E)).
 
-removeStaff(ID):- involucao(staff(ID,_,_,_)).
+% removeStaff(ID):- involucao(staff(ID,_,_,_)).
 
 % ----------------------------------------------------------------------
 % vacinação_Covid: #Staff, #utente, Data, Vacina, Toma -> {V,F}
@@ -65,7 +65,7 @@ vacinacao_covid(1,1,23-03-2021,pfizer,1).
 
 registaVacinacaoCovid(IDS,IDU,D,V,T):- evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
 
-removeVacinacaoCovid(IDS,IDU):- involucao(vacinacao_covid(IDS,IDU,_,_,_)).
+% removeVacinacaoCovid(IDS,IDU):- involucao(vacinacao_covid(IDS,IDU,_,_,_)).
 
 % ----------------------------------------------------------------------
 % falta_segunda_vacina: Lista com IDs utentes a quem falta 2a vacina
