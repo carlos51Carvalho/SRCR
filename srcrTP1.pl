@@ -36,26 +36,58 @@
 %       Pessoas com 80 ou mais anos de idade.
 % ----------------------------------------------------------------------
 
-primeira_fase(R):- append(morethan80(X),morethan50_diseased(Y),L),append(L,profissional(Z),R).
+primeira_fase(RS):- morethan80(X),morethan50_diseased(Y),concatenar(X,Y,L),profissional(Z),concatenar(L,Z,R),remove_dups(R,RS),!.
 
 
-doenca_grave([]):-!,fail.
-doenca_grave([Insuficiencia_cardiaca|_]).
-doenca_grave([Insuficiencia_renal|_]).
-doenca_grave([Doenca_respiratorio|_]).
-doenca_grave([H|T]):- doenca_grave(T).
+doenca_1afase([]):-!,fail.
+doenca_1afase([Insuficiencia_cardiaca|_]).
+doenca_1afase([Insuficiencia_renal|_]).
+doenca_1afase([Doenca_respiratoria|_]).
+doenca_1afase([H|T]):- doenca_1afase(T).
 
 
 profissional_prioritario("enfermeiro").
+profissional_prioritario("enfermeira").
 profissional_prioritario("medico").
+profissional_prioritario("medica").
 profissional_prioritario("militar").
 
 
 profissional(R):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,P,_,_),profissional_prioritario(P)),R).
 
-morethan50_diseased(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_grave(LDC),K is 2021, K-A >= 50),R),remove_dups(R,RS).
+morethan50_diseased(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_1afase(LDC),K is 2021, K-A >= 50),R),remove_dups(R,RS).
 
 morethan80(R):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),K is 2021, K-A >= 80),R).
+
+% ----------------------------------------------------------------------
+% Segunda Fase
+%      Pessoas de idade ≥65 anos (que não tenham sido vacinadas previamente)
+%      Pessoas entre os 50 e os 64 anos de idade, inclusive, com pelo menos uma das seguintes patologias:
+%           Diabetes
+%           Neoplasia maligna ativa
+%           Doença renal crónica (Taxa de Filtração Glomerular > 60ml/min)
+%           Insuficiência hepática
+%           Hipertensão arterial
+%           Obesidade
+% ----------------------------------------------------------------------
+
+segunda_fase(RS):- morethan65_notvacinated(X),between50and64_diseaded(Y),concatenar(X,Y,R),remove_dups(R,RS),!.
+
+doenca_2afase([]):-!,fail.
+doenca_2afase([Diabetes|_]).
+doenca_2afase([Neoplasia_maligna|_]).
+doenca_2afase([Doenca_renal_cronica|_]).
+doenca_2afase([Insuficiencia_hepatica|_]).
+doenca_2afase([Hipertensao_arterial|_]).
+doenca_2afase([Obesidade|_]).
+doenca_2afase([H|T]):- doenca_2afase(T).
+
+between50and64_diseaded(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_2afase(LDC),between50and64(A)),R),remove_dups(R,RS).
+
+between50and64(A):- K is 2021, K-A > 50, K-A =< 64.
+
+morethan65_notvacinated(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,_,_),nao_vacinado(X),pertence((ID,N),X),K is 2021, K-A >= 65),R),remove_dups(R,RS).
+
 
 % ----------------------------------------------------------------------
 % Utente: Idutente,NºSegSocial, Nome, Data_Nasc, Email, Telefone, Morada,
@@ -66,10 +98,10 @@ utente(1,123123123,"luis",02-02-2000,"teste@gmail.com",911222333,"braga",
 	"estudante",[cego|coxo],1).
 
 utente(2,123123124,"joao",02-02-2000,"teste2@gmail.com",911222334,"braga",
-	"estudante",[Insuficiencia_cardiaca],1).
+	"estudante",[Insuficiencia_renal],1).
 
-utente(3,124123124,"manuel",02-02-1930,"teste3@gmail.com",911232334,"braga",
-	"velho",[Insuficiencia_cardiaca| Insuficiencia_renal],1).
+utente(3,124123124,"manuel",02-02-1969,"teste3@gmail.com",911232334,"braga",
+	"velho",[Insuficiencia_cardiaca, Insuficiencia_renal, Insuficiencia_hepatica],1).
 
 utente(4,124123125,"xavier",02-02-1930,"testePri@gmail.com",911232355,"alentejo",
 	"enfermeiro",[],1).
@@ -103,7 +135,9 @@ removeStaff(ID):- involucao(staff(ID,_,_,_)).
 % ----------------------------------------------------------------------
 
 
-vacinacao_covid(1,1,23-03-2021,pfizer,2).
+vacinacao_covid(1,1,23-03-2021,pfizer,1).
+vacinacao_covid(1,1,31-03-2021,pfizer,2).
+vacinacao_covid(1,2,07-04-2021,pfizer,1).
 
 registaVacinacaoCovid(IDS,IDU,D,V,T):- evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
 
@@ -128,6 +162,42 @@ nao_vacinado(R):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),nao(vacinacao_co
 % ----------------------------------------------------------------------
 
 vacinado(R):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),vacinacao_covid(_,ID,_,_,2)),R).
+
+% ----------------------------------------------------------------------
+% vacinado_indevidamente: Lista com IDs e nomes de utentes vacinados indevidamente
+% ----------------------------------------------------------------------
+
+vacinado_indevidamente(RS) :- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),
+                                vacinado_indevidamente_1afase(X),
+                                vacinado_indevidamente_2afase(Z),concatenar(X,Z,R),pertence((ID,N),R)),R),
+                                remove_dups(R,RS).
+
+vacinado_indevidamente_1afase(RS):- solucoes((ID,N),
+                                    (utente(ID,_,N,_,_,_,_,_,_,_),
+                                    vacinado(X),pertence((ID,N),X),
+                                    nao(check_1afase((ID,N)))),R),
+                                    remove_dups(R,RS).
+
+vacinado_indevidamente_2afase(RS):- solucoes((ID,N),
+                                    (utente(ID,_,N,_,_,_,_,_,_,_),
+                                    vacinado(X),pertence((ID,N),X),
+                                    nao(check_2afase((ID,N)))),R),
+                                    remove_dups(R,RS).
+
+check_1afase((ID,N)):- primeira_fase(Y),pertence((ID,N),Y).
+
+check_2afase((ID,N)):- segunda_fase(Y),pertence((ID,N),Y).
+
+% ----------------------------------------------------------------------
+% candidato_nao_vacinado: Lista com IDs e nomes de utentes candidatos que ainda não foram vacinados
+% ----------------------------------------------------------------------
+
+candidato_nao_vacinado(RS):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),
+                                nao_vacinado(X),pertence((ID,N),X),
+                                candidato(Z),pertence((ID,N),Z)),R),
+                                remove_dups(R,RS).
+
+candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
 
 % ----------------------------------------------------------------------
 % Invariantes de inserção
@@ -244,7 +314,7 @@ teste( [R|LR] ) :-
 
 % ----------------------------------------------------------------------
 % Extensao do meta-predicado demo: Questao,Resposta -> {V,F}
-%                            Resposta = { verdadeiro,falso,desconhecido }
+%                            Resposta = { verdadeiro,falso }
 % ----------------------------------------------------------------------
 
 demo( Questao,verdadeiro ) :-
@@ -254,10 +324,18 @@ demo( Questao,falso ) :-
 
 % ----------------------------------------------------------------------
 
+% ----------------------------------------------------------------------
+% Extensao do predicado remove_dups: ListaInicial, ListaFinal 
+% ----------------------------------------------------------------------
+
 remove_dups([], []).
 remove_dups([First | Rest], NewRest) :- member(First, Rest), remove_dups(Rest, NewRest).
 remove_dups([First | Rest], [First | NewRest]) :- nao(member(First, Rest)), remove_dups(Rest, NewRest).
 
+
+% ----------------------------------------------------------------------
+% Extensao do predicado concatenar: Lista1, Lista2, ListaFinal 
+% ----------------------------------------------------------------------
 
 pertence(X,[X|_]).
 pertence(X,[H|T]):- X \= H, pertence(X,T).
@@ -268,3 +346,6 @@ adicionar(X,L,[X|L]).
 concatenar(T,[],T).
 concatenar([],T,T).
 concatenar([H|T],L,F):- adicionar(H,N,F), concatenar(T,L,N).
+
+
+intersection(A,B,AnB):- subtract(A,B,AminusB),subtract(A,AminusB,K),sort(K,AnB).
