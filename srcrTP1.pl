@@ -106,15 +106,21 @@ utente(3,124123124,"manuel",02-02-1969,"teste3@gmail.com",911232334,"braga",
 utente(4,124123125,"xavier",02-02-1930,"testePri@gmail.com",911232355,"alentejo",
 	"enfermeiro",[],1).
 
+showAllUtentes():- listing(utente).
+
 registaUtente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
 
 removeUtente(ID):- involucao(utente(ID,_,_,_,_,_,_,_,_,_)).
+
+removeUtente(NSS):- involucao(utente(_,NSS,_,_,_,_,_,_,_,_)).
 
 % ----------------------------------------------------------------------
 % centro_saúde: Idcentro, Nome, Morada, Telefone, Email -> {V,F}
 % ----------------------------------------------------------------------
 
 centro_saude(1,bragaHospital,braga,966777888,"braga@hospital.com").
+
+showAllCentroSaude():- listing(centro_saude).
 
 registaCentroSaude(ID,N,M,T,E):- evolucao(centro_saude(ID,N,M,T,E)).
 
@@ -126,18 +132,23 @@ removeCentroSaude(ID):- involucao(centro_saude(ID,_,_,_,_)).
 
 staff(1,1,enfermeiro1,"enfermeiro1@hospital.com").
 
+showAllStaff():- listing(staff).
+
 registaStaff(IDS,IDC,N,E):- evolucao(staff(IDS,IDC,N,E)).
 
 removeStaff(ID):- involucao(staff(ID,_,_,_)).
 
 % ----------------------------------------------------------------------
 % vacinação_Covid: #Staff, #utente, Data, Vacina, Toma -> {V,F}
+%                   pfizer, astrazeneca
 % ----------------------------------------------------------------------
 
 
 vacinacao_covid(1,1,23-03-2021,pfizer,1).
 vacinacao_covid(1,1,31-03-2021,pfizer,2).
 vacinacao_covid(1,2,07-04-2021,pfizer,1).
+
+showAllVacinacao():- listing(vacinacao_covid).
 
 registaVacinacaoCovid(IDS,IDU,D,V,T):- evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
 
