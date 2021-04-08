@@ -48,9 +48,9 @@ primeira_fase(RS):- morethan80(X),morethan50_diseased(Y),concatenar(X,Y,L),profi
 % ----------------------------------------------------------------------
 
 doenca_1afase([]):-!,fail.
-doenca_1afase([Insuficiencia_cardiaca|_]).
-doenca_1afase([Insuficiencia_renal|_]).
-doenca_1afase([Doenca_respiratoria|_]).
+doenca_1afase(["Insuficiencia_cardiaca"|_]).
+doenca_1afase(["Insuficiencia_renal"|_]).
+doenca_1afase(["Doenca_respiratoria"|_]).
 doenca_1afase([H|T]):- doenca_1afase(T).
 
 % ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ profissional(R):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,P,_,_),profissional_pri
 % de acordo com a sua idade e a lista de doenças crónicas
 % ----------------------------------------------------------------------
 
-morethan50_diseased(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_1afase(LDC),K is 2021, K-A >= 50),R),remove_dups(R,RS).
+morethan50_diseased(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_1afase(LDC),K is 2021, K-A >= 50),R),remove_dups(R,RS),!.
 
 % ----------------------------------------------------------------------
 % Extensão do predicado morethan80 que averigua os utentes candidatos à primeira fase
@@ -111,12 +111,12 @@ segunda_fase(RS):- morethan65_notvacinated(X),between50and64_diseaded(Y),concate
 % ----------------------------------------------------------------------
 
 doenca_2afase([]):-!,fail.
-doenca_2afase([Diabetes|_]).
-doenca_2afase([Neoplasia_maligna|_]).
-doenca_2afase([Doenca_renal_cronica|_]).
-doenca_2afase([Insuficiencia_hepatica|_]).
-doenca_2afase([Hipertensao_arterial|_]).
-doenca_2afase([Obesidade|_]).
+doenca_2afase(["Diabetes"|_]).
+doenca_2afase(["Neoplasia_maligna"|_]).
+doenca_2afase(["Doenca_renal_cronica"|_]).
+doenca_2afase(["Insuficiencia_hepatica"|_]).
+doenca_2afase(["Hipertensao_arterial"|_]).
+doenca_2afase(["Obesidade"|_]).
 doenca_2afase([H|T]):- doenca_2afase(T).
 
 % ----------------------------------------------------------------------
@@ -124,7 +124,7 @@ doenca_2afase([H|T]):- doenca_2afase(T).
 % de acordo com a sua idade e a lista de doenças crónicas
 % ----------------------------------------------------------------------
 
-between50and64_diseaded(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_2afase(LDC),between50and64(A)),R),remove_dups(R,RS).
+between50and64_diseaded(RS):- solucoes((ID,N),(utente(ID,_,N,D-M-A,_,_,_,_,LDC,_),doenca_2afase(LDC),between50and64(A)),R),remove_dups(R,RS),!.
 
 % ----------------------------------------------------------------------
 % Extensão do predicado between50and64 que averigua se a idade de um utente
@@ -162,16 +162,16 @@ utente(1,123123123,"Luis",02-02-2000,"luis@gmail.com",911222333,"braga","estudan
 utente(5,123456789,"Marta",02-02-1993,"marta@gmail.com",912345677,"algarve","esteticista",[],3).
 
     % Não pertence a nenhuma das fases
-utente(2,123123124,"Joao",24-04-2000,"joao@gmail.com",911222334,"braga","estudante",[Insuficiencia_renal],2).
+utente(2,123123124,"Joao",24-04-2000,"joao@gmail.com",911222334,"braga","estudante",["Insuficiencia_renal"],2).
 
 % Pertence a ambas as fases
-utente(3,124123124,"Manuel",02-02-1969,"manuel@gmail.com",911232334,"braga","arquiteto",[Insuficiencia_cardiaca, Insuficiencia_renal, Insuficiencia_hepatica],1).
+utente(3,124123124,"Manuel",02-02-1969,"manuel@gmail.com",911232334,"braga","arquiteto",["Insuficiencia_cardiaca", "Insuficiencia_renal", "Insuficiencia_hepatica"],1).
 
     % Pertence a ambas as fases - candidato
 utente(4,124123125,"Xavier",02-02-1930,"xavier@gmail.com",911232355,"alentejo","enfermeiro",[],3).
 
 % Pertence a 2a fase - candidato
-utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","professor",[Insuficiencia_hepatica],2).
+utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","professor",["Insuficiencia_hepatica"],2).
 
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllUtentes 
