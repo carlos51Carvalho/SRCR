@@ -324,7 +324,7 @@ vacinacao_covid(3,2,12-12-2020,pfizer,1).
 
 % Vacinacao valida - pertence a ambas as fases
 
-vacinacao_covid(2,3,07-02-2021,astrezeneca,1).
+vacinacao_covid(2,3,07-02-2021,astrazeneca,1).
 
 % Vacinacao valida - pertence a primeira fase
 
@@ -576,10 +576,17 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
 % Verifica se está a tomar a mesma vacina no caso de já ter tomado uma primeira dose
 +vacinacao_Covid(_,IDU,_,V,T) :: (
             (T == 1;
-            (solucoes(IDU,vacinacao_Covid(_,IDU,_,_,_,v,_),L),
+            (solucoes(IDU,vacinacao_Covid(_,IDU,_,_,_,V,_),L),
             comprimento(L,N),
             N == 2)
             )).
+
+% Verifica se já existe inserida uma dose para uma dada vacina
++vacinacao_covid(_,IDU,_,V,1)::(
+            (solucoes(IDU,(vacinacao_covid(_,IDU,_,V,1)),R),
+            comprimento(R,N),
+            N==1
+            )).            
             
 % Verifica se está a tomar a segunda dose depois da primeira
 +vacinacao_covid(_,IDU,D-M-A,_,T) ::(
@@ -589,10 +596,12 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
             (D>D2,M==M2,A==A2;M>M2,A==A2;A>A2)
             )).
 
+
+% Verifica se o utente já tem as duas vacinas
 +vacinacao_covid(_,IDU,_,_,_)::(
             (solucoes(IDU,(vacinacao_covid(_,IDU,_,_,_)),R),
             comprimento(R,N),
-            N==2
+            N=<2
             )).
 
 
@@ -679,6 +688,8 @@ demo( Questao,verdadeiro ) :-
     Questao.
 demo( Questao,falso ) :-
     -Questao.
+demo(Questao,desconhecido) :- 
+    nao(Questao), nao(-Questao).
 
 % ----------------------------------------------------------------------
 
