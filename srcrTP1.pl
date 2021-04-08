@@ -576,12 +576,12 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
 % Verifica se está a tomar a mesma vacina no caso de já ter tomado uma primeira dose
 +vacinacao_Covid(_,IDU,_,V,T) :: (
             (T == 1;
-            (solucoes(IDU,vacinacao_Covid(_,IDU,_,_,_,V,_),L),
-            comprimento(L,N),
+            (solucoes(IDU,vacinacao_Covid(_,IDU,_,_,_,V,_),R),
+            comprimento(R,N),
             N == 2)
             )).
 
-% Verifica se já existe inserida uma dose para uma dada vacina
+% Verifica se já existe inserida a primeira dose para uma dada vacina
 +vacinacao_covid(_,IDU,_,V,1)::(
             (solucoes(IDU,(vacinacao_covid(_,IDU,_,V,1)),R),
             comprimento(R,N),
