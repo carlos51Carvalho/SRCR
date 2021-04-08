@@ -243,14 +243,24 @@ showAllCentroSaude():- listing(centro_saude).
 %                       que permite o registo de um centro de saude
 % ----------------------------------------------------------------------
 
-registaCentroSaude(ID,N,M,T,E):- evolucao(centro_saude(ID,N,M,T,E)).
+registaCentroSaude(IDCS,N,M,T,E):- evolucao(centro_saude(IDCS,N,M,T,E)).
 
 % ----------------------------------------------------------------------
 % Extensão do predicado removeCentroSaudeID
 %                que permite a remoção de um centro de saude pelo seu ID
 % ----------------------------------------------------------------------
 
-removeCentroSaudeID(ID):- involucao(centro_saude(ID,_,_,_,_)).
+removeCentroSaudeID(IDCS):- involucao(centro_saude(IDCS,_,_,_,_)).
+
+% ----------------------------------------------------------------------
+% Extensão do predicado removeCentroSaudeAndStaff
+% que permite a remoção de um centro de saude pelo seu ID e o staff associado
+% ----------------------------------------------------------------------
+
+removeCentroSaudeAndStaff(IDCS):- solucoes(IDS,(staff(IDS,IDCS,_,_)),R), removeStaffAtCentroSaude(R), involucao(centro_saude(IDCS,_,_,_,_)).
+
+removeStaffAtCentroSaude([]).
+removeStaffAtCentroSaude([IDS|T]):- involucao(staff(IDS,_,_,_)), removeStaffAtCentroSaude(T).
 
 % ----------------------------------------------------------------------
 % Extensão do predicado showStaffAtCentroSaude
@@ -343,6 +353,10 @@ registaVacinacaoCovid(IDS,IDU,D,V,T):- evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
 % ----------------------------------------------------------------------
 
 removeVacinacaoCovid(IDU):- involucao(vacinacao_covid(_,IDU,_,_,_)).
+
+% ----------------------------------------------------------------------
+% Funcionalidades minimas
+% ----------------------------------------------------------------------
 
 % ----------------------------------------------------------------------
 % falta_segunda_vacina: Lista com IDs e nomes de utentes a quem falta 2a vacina
@@ -566,12 +580,19 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
             comprimento(L,N),
             N == 2)
             )).
+            
 % Verifica se está a tomar a segunda dose depois da primeira
 +vacinacao_covid(_,IDU,D-M-A,_,T) ::(
             (T == 1;
             (vacinacao_covid(_,IDU,D2-M2-A2,_,1)),
             T==2,
             (D>D2,M==M2,A==A2;M>M2,A==A2;A>A2)
+            )).
+
++vacinacao_covid(_,IDU,_,_,_)::(
+            (solucoes(IDU,(vacinacao_covid(_,IDU,_,_,_)),R),
+            comprimento(R,N),
+            N==2
             )).
 
 
