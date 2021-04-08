@@ -158,7 +158,7 @@ terceira_fase(RS) :- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),primeira_fase
 
 % Vacinado indevidamente
 
-utente(1,123123123,"Luis",02-02-2000,"luis@gmail.com",911222333,"braga","estudante",[cego,coxo],1).
+utente(1,123123123,"Luis",02-02-2000,"luis@gmail.com",911222333,"braga","estudante",["Diabetes"],1).
 utente(5,123456789,"Marta",02-02-1993,"marta@gmail.com",912345677,"algarve","esteticista",[],3).
 
     % Não pertence a nenhuma das fases
@@ -593,7 +593,7 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
             (T == 1;
             (vacinacao_covid(_,IDU,D2-M2-A2,_,1)),
             T==2,
-            (D>D2,M==M2,A==A2;M>M2,A==A2;A>A2)
+            (D>D2,M=:=M2,A=:=A2;M>M2,A=:=A2;A>A2)
             )).
 
 
