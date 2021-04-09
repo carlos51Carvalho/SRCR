@@ -167,11 +167,13 @@ utente(2,123123124,"Joao",24-04-2000,"joao@gmail.com",911222334,"braga","estudan
 % Pertence a ambas as fases
 utente(3,124123124,"Manuel",02-02-1969,"manuel@gmail.com",911232334,"braga","arquiteto",["Insuficiencia_cardiaca", "Insuficiencia_renal", "Insuficiencia_hepatica"],1).
 
-    % Pertence a ambas as fases - candidato
-utente(4,124123125,"Xavier",02-02-1930,"xavier@gmail.com",911232355,"alentejo","enfermeiro",[],3).
+% Pertence a ambas as fases - candidato
+utente(4,124123125,"Xavier",02-02-2000,"xavier@gmail.com",911232355,"alentejo","enfermeiro",[],1).
 
 % Pertence a 2a fase - candidato
 utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","professor",["Insuficiencia_hepatica"],2).
+
+
 
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllUtentes 
@@ -455,7 +457,7 @@ candidato_nao_vacinado(RS):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),
 % Extensão do precidado candidato que indica se um utente é candidato a ser vacinado
 % ----------------------------------------------------------------------                                
 
-candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
+candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R,RS).
 
 % ----------------------------------------------------------------------
 % Invariantes de inserção
