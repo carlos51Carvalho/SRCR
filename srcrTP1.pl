@@ -270,6 +270,13 @@ removeStaffAtCentroSaude([IDS|T]):- involucao(staff(IDS,_,_,_)), removeStaffAtCe
 showStaffAtCentroSaude(IDCS,RS):- solucoes((IDS,N),(staff(IDS,IDCS,N,_)),R),remove_dups(R,RS).
 
 % ----------------------------------------------------------------------
+% Extensão do predicado showVacinacaoAtCentroSaude
+% que apresenta uma lista de vacinações realizadas num dado centro de saúde 
+% ----------------------------------------------------------------------
+
+showVacinacaoAtCentroSaude(IDCS,RS):- solucoes((vacinacao_covid(IDS,IDU,D,V,T)),(utente(IDU,_,_,_,_,_,_,_,_,IDCS),vacinacao_covid(IDS,IDU,D,V,T),staff(IDS,_,_,_),centro_saude(IDCS,NCS,_,_,_)),R),remove_dups(R,RS).
+
+% ----------------------------------------------------------------------
 % staff: Idstaff, Idcentro, Nome, email -> {V,F}
 % ----------------------------------------------------------------------
 
