@@ -329,15 +329,15 @@ vacinacao_covid(1,1,31-03-2021,"pfizer",2).
 
 vacinacao_covid(3,5,23-03-2021,"pfizer",1).
 
-vacinacao_covid(3,2,12-12-2020,"pfizer",1).
+vacinacao_covid(2,2,12-12-2020,"pfizer",1).
 
 % Vacinacao valida - pertence a ambas as fases
 
-vacinacao_covid(2,3,07-02-2021,"astrazeneca",1).
+vacinacao_covid(4,3,07-02-2021,"astrazeneca",1).
 
 % Vacinacao valida - pertence a primeira fase
 
-vacinacao_covid(3,2,12-2-2021,"pfizer",2).
+vacinacao_covid(2,2,12-2-2021,"pfizer",2).
 
 % Vacinacao valida - pertence a segunda fase
 
