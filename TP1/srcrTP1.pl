@@ -422,21 +422,21 @@ vacinado_indevidamente_2afase(RS):- solucoes((ID,N),
                                     remove_dups(R,RS).
 
 % ----------------------------------------------------------------------
-% Extensão do precidado atleast_one_vacina que indica se um utente
+% Extensão do predicado atleast_one_vacina que indica se um utente
 % já tem pelo menos uma vacina
 % ----------------------------------------------------------------------
 
 atleast_one_vacina(ID):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),vacinacao_covid(_,ID,_,_,_)),R),comprimento(R,N), N>=1.
 
 % ----------------------------------------------------------------------
-% Extensão do precidado check_1afase que indica se um utente
+% Extensão do predicado check_1afase que indica se um utente
 % pertence aos utentes aptos à primeira fase de vacinação
 % ----------------------------------------------------------------------
 
 check_1afase((ID,N)):- primeira_fase(Y),pertence((ID,N),Y).
 
 % ----------------------------------------------------------------------
-% Extensão do precidado check_2afase que indica se um utente
+% Extensão do predicado check_2afase que indica se um utente
 % pertence aos utentes aptos à segunda fase de vacinação
 % ----------------------------------------------------------------------
 
@@ -454,7 +454,7 @@ candidato_nao_vacinado(RS):- solucoes((ID,N),(utente(ID,_,N,_,_,_,_,_,_,_),
                                 remove_dups(R,RS).
 
 % ----------------------------------------------------------------------
-% Extensão do precidado candidato que indica se um utente é candidato a ser vacinado
+% Extensão do predicado candidato que indica se um utente é candidato a ser vacinado
 % ----------------------------------------------------------------------                                
 
 candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R,RS).
