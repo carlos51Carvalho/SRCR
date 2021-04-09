@@ -221,7 +221,7 @@ removeInfoVacinacao([IDU|Tail]):- removeVacinacaoCovid(IDU),removeInfoVacinacao(
 % que calcula o número de vacinas tomadas por um utente
 % ----------------------------------------------------------------------
 
-numVacinasUtentes(ID,T):- solucoes(ID,(vacinacao_covid(_,ID,_,_,_)),R), comprimento(R,T).
+numVacinasUtente(IDU,TS):- solucoes(ID,(vacinacao_covid(_,IDU,_,_,_)),R), comprimento(R,TS).
 
 % ----------------------------------------------------------------------
 % centro_saúde: Idcentro, Nome, Morada, Telefone, Email -> {V,F}
@@ -315,20 +315,20 @@ showVacinacaoDoneByStaff(IDS,RS):- solucoes((vacinacao_covid(IDS,IDU,DT,V,T)),(s
 
 % Vacinacao invalida - nao pertence a nenhuma das fase
 
-vacinacao_covid(1,1,23-03-2021,pfizer,1).
-vacinacao_covid(1,1,31-03-2021,pfizer,2).
+vacinacao_covid(1,1,23-03-2021,"pfizer",1).
+vacinacao_covid(1,1,31-03-2021,"pfizer",2).
 
-vacinacao_covid(3,5,23-03-2021,pfizer,1).
+vacinacao_covid(3,5,23-03-2021,"pfizer",1).
 
-vacinacao_covid(3,2,12-12-2020,pfizer,1).
+vacinacao_covid(3,2,12-12-2020,"pfizer",1).
 
 % Vacinacao valida - pertence a ambas as fases
 
-vacinacao_covid(2,3,07-02-2021,astrazeneca,1).
+vacinacao_covid(2,3,07-02-2021,"astrazeneca",1).
 
 % Vacinacao valida - pertence a primeira fase
 
-vacinacao_covid(3,2,12-2-2021,pfizer,2).
+vacinacao_covid(3,2,12-2-2021,"pfizer",2).
 
 % Vacinacao valida - pertence a segunda fase
 
@@ -567,42 +567,30 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,RS).
 
 % Verifica se é a toma correta, isto é, se já tomou a primeira só pode tomar a segunda
 % e se ainda não tomou nenhuma, só pode tomar a primeira
-+vacinacao_covid(_,IDU,_,_,T):: (
-            (utente(ID,_,_,_,_,_,_,_,_,_)),
-            numVacinasUtentes(ID,TS),T=<2,
-            T =:= TS
-            ). 
++vacinacao_covid(_,IDU,_,_,T):: 
+            ((utente(IDU,_,_,_,_,_,_,_,_,_)),
+            numVacinasUtente(IDU,TS),T=<2,
+            T =:= TS). 
+
 
 % Verifica se está a tomar a mesma vacina no caso de já ter tomado uma primeira dose
-+vacinacao_Covid(_,IDU,_,V,T) :: (
++vacinacao_Covid(_,IDU,_,V,T) :: 
             (T == 1;
-            (solucoes(IDU,vacinacao_Covid(_,IDU,_,_,_,V,_),R),
+            (solucoes(IDU,vacinacao_covid(_,IDU,_,V,_),R),
             comprimento(R,N),
             N == 2)
-            )).
+            ).
 
-% Verifica se já existe inserida a primeira dose para uma dada vacina
-+vacinacao_covid(_,IDU,_,V,1)::(
-            (solucoes(IDU,(vacinacao_covid(_,IDU,_,V,1)),R),
-            comprimento(R,N),
-            N==1
-            )).            
-            
+
 % Verifica se está a tomar a segunda dose depois da primeira
-+vacinacao_covid(_,IDU,D-M-A,_,T) ::(
++vacinacao_covid(_,IDU,D-M-A,_,T) ::
             (T == 1;
             (vacinacao_covid(_,IDU,D2-M2-A2,_,1)),
             T==2,
             (D>D2,M=:=M2,A=:=A2;M>M2,A=:=A2;A>A2)
-            )).
+            ).
 
 
-% Verifica se o utente já tem as duas vacinas
-+vacinacao_covid(_,IDU,_,_,_)::(
-            (solucoes(IDU,(vacinacao_covid(_,IDU,_,_,_)),R),
-            comprimento(R,N),
-            N=<2
-            )).
 
 
 % ----------------------------------------------------------------------
