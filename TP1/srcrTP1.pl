@@ -410,7 +410,7 @@ vacinado_indevidamente_1afase(RS):- solucoes((ID,N),
                                     remove_dups(R,RS).
 
 % ----------------------------------------------------------------------
-% Extensão do predicado vacinado_indevidamente_1afase que apresenta uma lista
+% Extensão do predicado vacinado_indevidamente_2afase que apresenta uma lista
 % com os utentes que foram mal vacinados de acordo com os critérios estabelecidos para a segunda fase
 % ----------------------------------------------------------------------
 
