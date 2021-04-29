@@ -174,6 +174,43 @@ utente(4,124123125,"Xavier",02-02-2000,"xavier@gmail.com",911232355,"alentejo","
 utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","professor",["Insuficiencia_hepatica"],2).
 
 
+% Conhecimento Imperfeito
+
+-utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- nao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                        nao(excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS))).
+
+% Negação forte
+-utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",963554145,"coimbra","sapateiro",["Diabetes"],3).
+
+% Incerto
+
+% Número de Segurança Social desconhecido
+utente(7,xNSS,"Jaime",03-03-1986,"jaimefontes@gmail.com",917234567,"viseu","musico",["Colesterol_elevado"],3).
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,xNSS,N,DT,E,T,M,P,LDC,IDCS).
+
+% Número de telefone desconhecido
+utente(8,245789123,"Ruben",27-05-2002,"rubenvizela@gmail.com",xTEL,"aveiro","piloto",["Insuficiencia_cardiaca","Diabetes"],1).
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,xTEL,M,P,LDC,IDCS).
+
+% Impreciso
+
+% Utente com dois números de telefone
+utente(9,123245333,"Alexandra",26-02-1997,"xanateixeira@gmail.com",{917234252,966745812},"lisboa","carpinteira",[],2).
+excecao(utente(9,123245333,"Alexandra",26-02-1997,"xanateixeira@gmail.com",917234252,"lisboa","carpinteira",[],2)).
+excecao(utente(9,123245333,"Alexandra",26-02-1997,"xanateixeira@gmail.com",966745812,"lisboa","carpinteira",[],2)).
+
+% Utente com duas moradas
+utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,{"porto","pacos de ferreira"},"bombeiro",["Neoplasia_maligna"],3).
+excecao(utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,"porto","bombeiro",["Neoplasia_maligna"],3)).
+excecao(utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,"pacos de ferreira","bombeiro",["Neoplasia_maligna"],3)).
+
+% Interdito
+
+% Utente com Numero de Segurança Social desconhecido que não poderemos vir a saber
+utente(11,xNIFProibido,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1).
+nulo(xNIFProibido).
+
+
 
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllUtentes 
@@ -233,6 +270,36 @@ centro_saude(1,"Hospital de Braga","Braga",253027000,"hospital_braga@sns.pt").
 centro_saude(2,"Hospital da Trofa Braga Norte","Braga",253027002,"hospital_trofa_braga@sns.pt").
 centro_saude(3,"Hospital de São João","Porto",225512100,"hospital_sao_joao@sns.pt").
 
+% Conhecimento Imperfeito
+
+-centro_saude(IDCS,N,M,T,E):- nao(centro_saude(IDCS,N,M,T,E)),
+                              nao(excecao(centro_saude(IDCS,N,M,T,E))).
+
+% Negação forte
+-centro_saude(8,"Hospital de Coimbra","Coimbra",239400400,"hospital_coimbra@sns.pt").
+
+% Conhecimento Incerto
+% Centro de Saude com telefone desconhecido
+centro_saude(4,"Hospital de Aveiro","Aveiro",xTCS,"hospital_aveiro@sns.pt").
+excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,M,xTCS,E).
+
+% Centro de Saude com morada desconhecida
+centro_saude(5,"Hospital da Luz",xMCS,255787256,"hospital_da_luz@sns.pt").
+excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,xMCS,T,E).
+
+% Conhecimento Impreciso
+% Centro de saude com multiplos emails
+centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,{"hospital_dos_brinquedos@sns.pt","hospital_brincadeiras@sns.pt"}).
+excecao(centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,"hospital_dos_brinquedos@sns.pt")).
+excecao(centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,"hospital_brincadeiras@sns.pt")).
+
+
+% Conhecimento Interdito
+% Centro de Saude com telefone interdito
+centro_saude(7,"Hospital de Faro","Faro",xTProibidoCS,"hospital_faro@sns.pt").
+nulo(xTProibidoCS).
+
+
 % ---------------------------------------------------------------------------
 % Extensão do predicado showAllCentroSaude 
 %                       que apresenta ao utilizador todos os centros de saude
@@ -289,6 +356,42 @@ staff(4,1,"Antonio","antonioalves@gmail.com").
 staff(5,2,"Ruben","rubenpteixeira@gmail.com").
 staff(6,3,"Julian","julianaribeiro@gmail.com").
 
+% Conhecimento Imperfeito
+
+-staff(IDS,IDCS,N,E):- nao(staff(IDS,IDCS,N,E)),
+                       nao(excecao(staff(IDS,IDCS,N,E))).
+
+% Negação forte
+
+-staff(11,1,"Andre","andreromeiro@gmail.com").
+
+% Conhecimento Incerto
+
+% Staff com Email desconhecido
+staff(7,1,"Romeu",xES007).
+excecao(staff(IDS,IDCS,N,E)):- staff(IDS,IDCS,N,xES007).
+
+% Staff com Id de Centro de Saúde desconhecido
+staff(8,xIDCS008,"Julieta","julietasilva@gmail.com").
+excecao(staff(IDS,IDCS,N,E)):- staff(IDS,xIDCS008,N,E).
+
+
+% Conhecimento Impreciso
+% Staff que trabalha em vários centros de saúde
+staff(9,[1,3],"Roberto","robertoalmeida@gmail.com").
+excecao(staff(9,IDCS,"Roberto","robertoalmeida@gmail.com")):- pertence(D,[1,2,3]).
+
+% Staff que tem vários emails
+staff(10,1,"Duarte",{"duarteferreira2@gmail.com","duarteferreira23@gmail.com"}).
+excecao(staff(10,1,"Duarte","duarteferreira2@gmail.com")).
+excecao(staff(10,1,"Duarte","duarteferreira23@gmail.com")).
+
+
+% Conhecimento Interdito
+% Staff com id desconhecido
+staff(xIDS,2,"Jorge","jorgeteixeira@gmail.com").
+nulo(xIDS).
+
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllStaff 
 %                       que apresenta ao utilizador todo o staff
@@ -335,11 +438,48 @@ vacinacao_covid(2,2,12-12-2020,"pfizer",1).
 
 vacinacao_covid(4,3,07-02-2021,"astrazeneca",1).
 
+
 % Vacinacao valida - pertence a primeira fase
 
 vacinacao_covid(2,2,12-2-2021,"pfizer",2).
 
-% Vacinacao valida - pertence a segunda fase
+
+% Conhecimento Imperfeito
+
+-vacinacao_covid(IDS,IDU,D,V,T):- nao(vacinacao_covid(IDS,IDU,D,V,T)),
+                                  nao(excecao(vacinacao_covid(IDS,IDU,D,V,T))).
+
+% Negação forte
+-vacinacao_covid(4,3,20-03-2021,"astrazeneca",2).
+
+
+% Conhecimento Incerto
+% Vacinacao com vacina desconhecida
+vacinacao_covid(1,9,24-05-2021,xV,1).
+excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(IDS,IDU,D,xV,T).
+
+% Vacinacao com staff desconhecido
+vacinacao_covid(xIDS,8,12-03-2021,"pfizer",1).
+excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(xIDS,IDU,D,V,T).
+
+
+% Conhecimento Impreciso
+% Vacinacao com vários utentes
+vacinacao_covid(1,{7,9,11},24-04-2021,"pfizer",1).
+excecao(vacinacao_covid(1,7,24-04-2021,"pfizer",1)).
+excecao(vacinacao_covid(1,9,24-04-2021,"pfizer",1)).
+excecao(vacinacao_covid(1,11,24-04-2021,"pfizer",1)).
+
+% Vacinacao com diversas vacinas
+vacinacao_covid(3,10,17-02-2021,{"pfizer","astrazeneca"},1).
+excecao(vacinacao_covid(3,10,17-02-2021,"pfizer",1)).
+excecao(vacinacao_covid(3,10,17-02-2021,"astrazeneca",1)).
+
+
+% Conhecimento Interdito
+% Vacinacao com data interdita
+vacinacao_covid(1,6,xDV,"astrazeneca",1).
+nulo(xDV).
 
 
 % ----------------------------------------------------------------------
@@ -502,6 +642,12 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 		  NS == 1
                   ).
 
+% Invariantes de Conhecimento Imperfeito Interdito
+
++utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS),nao(nulo(NSS))),R),
+                                         comprimento(R,N),
+                                         N==1).
+
 
 
 % ----------------------------------------------------------------------
@@ -528,7 +674,13 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 		  (staff( _,_,_,E )), S ),
                   comprimento( S,NS ), 
 		  NS == 1
-                  ).                  
+                  ).
+
+% Invariantes de Conhecimento Imperfeito Interdito
+
++staff(IDS,IDCS,N,E)::(solucoes(IDS,(staff(IDS,IDCS,N,E),nao(nulo(IDS))),R),
+                       comprimento(R,N),
+                       N==1).
 
 % ----------------------------------------------------------------------
 % Centro de Saude
@@ -554,7 +706,13 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 		  (centro_saude( _,_,_,_,E )), S ),
                   comprimento( S,NS ), 
 		  NS == 1
-                  ).                  
+                  ).
+
+% Invariantes de Conhecimento Imperfeito Interdito
++centro_saude(IDC,N,M,T,E)::(solucoes(T,(centro_saude(IDC,N,M,T,E),nao(nulo(T))),R),
+                            comprimento(R,N),
+                            N==1).
+
 
 % ----------------------------------------------------------------------
 % Vacinação Covid
@@ -598,7 +756,16 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
             ).
 
 
+% Verifica se o staff que vacinou está designado para o centro de saúde do utente
++vacinacao_covid(IDS,IDU,_,_,_)::(solucoes((IDS,IDCS,IDU),(staff(IDS,IDCS,_,_),utente(IDU,_,_,_,_,_,_,_,_,IDCS)),R),
+                                 comprimento(R,N),
+                                 N==1).
 
+
+% Invariantes de Conhecimento Imperfeito Interdito
++vacinacao_covid(IDS,IDU,D,V,T)::(solucoes(D,(vacinacao_covid(IDS,IDU,D,V,T),nao(nulo(D))),R),
+                                  comprimento(R,N),
+                                  N==1).
 
 % ----------------------------------------------------------------------
 % Invariantes de remoção
