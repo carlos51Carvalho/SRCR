@@ -211,6 +211,11 @@ excecao(utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,
 utente(11,xNIFProibido,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1).
 nulo(xNIFProibido).
 
+% Invariantes de Conhecimento Imperfeito Interdito
++utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(11,NSS,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1),nao(nulo(NSS))),R),
+                                         comprimento(R,N1),
+                                         N1==0).
+
 
 
 % ----------------------------------------------------------------------
@@ -301,6 +306,10 @@ excecao(centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,"hospital_bri
 centro_saude(7,"Hospital de Faro","Faro",xTProibidoCS,"hospital_faro@sns.pt").
 nulo(xTProibidoCS).
 
+% Invariantes de Conhecimento Imperfeito Interdito
++centro_saude(IDC,N,M,T,E)::(solucoes(T,(centro_saude(7,"Hospital de Faro","Faro",T,"hospital_faro@sns.pt"),nao(nulo(T))),R),
+                            comprimento(R,N1),
+                            N1==0).
 
 % ---------------------------------------------------------------------------
 % Extensão do predicado showAllCentroSaude 
@@ -394,6 +403,11 @@ excecao(staff(10,1,"Duarte","duarteferreira23@gmail.com")).
 staff(xIDS,2,"Jorge","jorgeteixeira@gmail.com").
 nulo(xIDS).
 
+% Invariantes de Conhecimento Imperfeito Interdito
++staff(IDS,IDCS,N,E)::(solucoes(IDS,(staff(IDS,2,"Jorge","jorgeteixeira@gmail.com"),nao(nulo(IDS))),R),
+                       comprimento(R,N1),
+                       N1==0).
+
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllStaff 
 %                       que apresenta ao utilizador todo o staff
@@ -484,6 +498,10 @@ excecao(vacinacao_covid(3,10,17-02-2021,"astrazeneca",1)).
 vacinacao_covid(1,6,23-07-2021,xVP,1).
 nulo(xVP).
 
+% Invariantes de Conhecimento Imperfeito Interdito
++vacinacao_covid(IDS,IDU,D,V,T)::(solucoes(V,(vacinacao_covid(1,6,23-07-2021,V,1),nao(nulo(V))),R),
+                                  comprimento(R,N),
+                                  N==1).
 
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllVacinacao 
@@ -645,11 +663,7 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 		  NS == 1
                   ).
 
-% Invariantes de Conhecimento Imperfeito Interdito
 
-+utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(11,NSS,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1),nao(nulo(NSS))),R),
-                                         comprimento(R,N1),
-                                         N1==0).
 
 
 
@@ -679,10 +693,7 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 		  NS == 1
                   ).
 
-% Invariantes de Conhecimento Imperfeito Interdito
-+staff(IDS,IDCS,N,E)::(solucoes(IDS,(staff(IDS,2,"Jorge","jorgeteixeira@gmail.com"),nao(nulo(IDS))),R),
-                       comprimento(R,N1),
-                       N1==0).
+
 
 % ----------------------------------------------------------------------
 % Centro de Saude
@@ -710,10 +721,7 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 		  NS == 1
                   ).
 
-% Invariantes de Conhecimento Imperfeito Interdito
-+centro_saude(IDC,N,M,T,E)::(solucoes(T,(centro_saude(7,"Hospital de Faro","Faro",T,"hospital_faro@sns.pt"),nao(nulo(T))),R),
-                            comprimento(R,N1),
-                            N1==0).
+
 
 
 % ----------------------------------------------------------------------
@@ -764,10 +772,6 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
                                  N==1).
 
 
-% Invariantes de Conhecimento Imperfeito Interdito
-+vacinacao_covid(IDS,IDU,D,V,T)::(solucoes(V,(vacinacao_covid(1,6,23-07-2021,V,1),nao(nulo(V))),R),
-                                  comprimento(R,N),
-                                  N==1).
 
 % ----------------------------------------------------------------------
 % Invariantes de remoção
