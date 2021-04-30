@@ -180,6 +180,7 @@ utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","pro
                                         nao(excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS))).
 
 % Negação forte
+utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",xTU,"coimbra","sapateiro",["Diabetes"],3)
 -utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",963554145,"coimbra","sapateiro",["Diabetes"],3).
 
 % Incerto
@@ -268,7 +269,7 @@ numVacinasUtente(IDU,TS):- solucoes(ID,(vacinacao_covid(_,IDU,_,_,_)),R), compri
 
 centro_saude(1,"Hospital de Braga","Braga",253027000,"hospital_braga@sns.pt").
 centro_saude(2,"Hospital da Trofa Braga Norte","Braga",253027002,"hospital_trofa_braga@sns.pt").
-centro_saude(3,"Hospital de São João","Porto",225512100,"hospital_sao_joao@sns.pt").
+centro_saude(3,"Hospital de Sao Joao","Porto",225512100,"hospital_sao_joao@sns.pt").
 
 % Conhecimento Imperfeito
 
@@ -276,6 +277,7 @@ centro_saude(3,"Hospital de São João","Porto",225512100,"hospital_sao_joao@sns
                               nao(excecao(centro_saude(IDCS,N,M,T,E))).
 
 % Negação forte
+centro_saude(8,"Hospital de Coimbra","Coimbra",239400400,xECS).
 -centro_saude(8,"Hospital de Coimbra","Coimbra",239400400,"hospital_coimbra@sns.pt").
 
 % Conhecimento Incerto
@@ -343,7 +345,7 @@ showStaffAtCentroSaude(IDCS,RS):- solucoes((IDS,N),(staff(IDS,IDCS,N,_)),R),remo
 % que apresenta uma lista de vacinações realizadas num dado centro de saúde 
 % ----------------------------------------------------------------------
 
-showVacinacaoAtCentroSaude(IDCS,RS):- solucoes((vacinacao_covid(IDS,IDU,D,V,T)),(utente(IDU,_,_,_,_,_,_,_,_,IDCS),vacinacao_covid(IDS,IDU,D,V,T),staff(IDS,_,_,_),centro_saude(IDCS,NCS,_,_,_)),R),remove_dups(R,RS).
+showVacinacaoAtCentroSaude(IDCS,RS):- solucoes((vacinacao_covid(IDS,IDU,D,V,T)),(utente(IDU,_,_,_,_,_,_,_,_,IDCS),vacinacao_covid(IDS,IDU,D,V,T),staff(IDS,_,_,_),centro_saude(IDCS,N,_,_,_)),R),remove_dups(R,RS).
 
 % ----------------------------------------------------------------------
 % staff: Idstaff, Idcentro, Nome, email -> {V,F}
@@ -362,8 +364,8 @@ staff(6,3,"Julian","julianaribeiro@gmail.com").
                        nao(excecao(staff(IDS,IDCS,N,E))).
 
 % Negação forte
-
--staff(11,1,"Andre","andreromeiro@gmail.com").
+staff(12,xSatIDCS,"Manuel","manuelsilva@gmail.com").
+-staff(12,3,"Manuel","manuelsilva@gmail.com").
 
 % Conhecimento Incerto
 
@@ -450,7 +452,8 @@ vacinacao_covid(2,2,12-2-2021,"pfizer",2).
                                   nao(excecao(vacinacao_covid(IDS,IDU,D,V,T))).
 
 % Negação forte
--vacinacao_covid(4,3,20-03-2021,"astrazeneca",2).
+vacinacao_covid(1,11,12-05-2021,xV,1).
+-vacinacao_covid(1,11,12-05-2021,"astrazeneca",1).
 
 
 % Conhecimento Incerto
@@ -477,9 +480,9 @@ excecao(vacinacao_covid(3,10,17-02-2021,"astrazeneca",1)).
 
 
 % Conhecimento Interdito
-% Vacinacao com data interdita
-vacinacao_covid(1,6,xDV,"astrazeneca",1).
-nulo(xDV).
+% Vacinacao com vacina interdita
+vacinacao_covid(1,6,23-07-2021,xVP,1).
+nulo(xVP).
 
 
 % ----------------------------------------------------------------------
@@ -644,9 +647,9 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 
 % Invariantes de Conhecimento Imperfeito Interdito
 
-+utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS),nao(nulo(NSS))),R),
-                                         comprimento(R,N),
-                                         N==1).
++utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(11,NSS,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1),nao(nulo(NSS))),R),
+                                         comprimento(R,N1),
+                                         N1==0).
 
 
 
@@ -677,10 +680,9 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
                   ).
 
 % Invariantes de Conhecimento Imperfeito Interdito
-
-+staff(IDS,IDCS,N,E)::(solucoes(IDS,(staff(IDS,IDCS,N,E),nao(nulo(IDS))),R),
-                       comprimento(R,N),
-                       N==1).
++staff(IDS,IDCS,N,E)::(solucoes(IDS,(staff(IDS,2,"Jorge","jorgeteixeira@gmail.com"),nao(nulo(IDS))),R),
+                       comprimento(R,N1),
+                       N1==0).
 
 % ----------------------------------------------------------------------
 % Centro de Saude
@@ -709,9 +711,9 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
                   ).
 
 % Invariantes de Conhecimento Imperfeito Interdito
-+centro_saude(IDC,N,M,T,E)::(solucoes(T,(centro_saude(IDC,N,M,T,E),nao(nulo(T))),R),
-                            comprimento(R,N),
-                            N==1).
++centro_saude(IDC,N,M,T,E)::(solucoes(T,(centro_saude(7,"Hospital de Faro","Faro",T,"hospital_faro@sns.pt"),nao(nulo(T))),R),
+                            comprimento(R,N1),
+                            N1==0).
 
 
 % ----------------------------------------------------------------------
@@ -763,7 +765,7 @@ candidato(RS):- primeira_fase(X),segunda_fase(Y),concatenar(X,Y,R),remove_dups(R
 
 
 % Invariantes de Conhecimento Imperfeito Interdito
-+vacinacao_covid(IDS,IDU,D,V,T)::(solucoes(D,(vacinacao_covid(IDS,IDU,D,V,T),nao(nulo(D))),R),
++vacinacao_covid(IDS,IDU,D,V,T)::(solucoes(V,(vacinacao_covid(1,6,23-07-2021,V,1),nao(nulo(V))),R),
                                   comprimento(R,N),
                                   N==1).
 
