@@ -399,12 +399,12 @@ excecao(staff(10,1,"Duarte","duarteferreira23@gmail.com")).
 
 
 % Conhecimento Interdito
-% Staff com id desconhecido
-staff(xIDS,2,"Jorge","jorgeteixeira@gmail.com").
-nulo(xIDS).
+% Staff com email interdito
+staff(11,2,"Ana",xEProibidoS).
+nulo(xEProibidoS).
 
 % Invariantes de Conhecimento Imperfeito Interdito
-+staff(IDS,IDCS,N,E)::(solucoes(IDS,(staff(IDS,2,"Jorge","jorgeteixeira@gmail.com"),nao(nulo(IDS))),R),
++staff(IDS,IDCS,N,E)::(solucoes(E,(staff(11,2,"Jorge",E),nao(nulo(E))),R),
                        comprimento(R,N1),
                        N1==0).
 
