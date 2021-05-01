@@ -591,7 +591,7 @@ excecao(staff(IDS,IDCS,N,E)):- staff(IDS,IDCS,N,xEProibidoS).
 nulo(xEProibidoS).
 
 % Invariantes de Conhecimento Imperfeito Interdito
-+staff(IDS,IDCS,N,E)::(solucoes(E,(staff(11,2,"Jorge",E),nao(nulo(E))),R),
++staff(IDS,IDCS,N,E)::(solucoes(E,(staff(11,2,"Ana",E),nao(nulo(E))),R),
                        comprimento(R,N1),
                        N1==0).
 
