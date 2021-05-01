@@ -299,8 +299,9 @@ atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- demo(utente(ID,NSS,N,DT
 % ----------------------------------------------------------------------
 
 % Utente com Numero de Segurança Social desconhecido que não poderemos vir a saber
-utente(11,xNIFProibido,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1).
-nulo(xNIFProibido).
+utente(11,xNSSProibido,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1).
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,xNSSProibido,N,DT,E,T,M,P,LDC,IDCS).
+nulo(xNSSProibido).
 
 % Invariantes de Conhecimento Imperfeito Interdito
 +utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(11,NSS,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1),nao(nulo(NSS))),R),
@@ -447,6 +448,7 @@ atualizaCentroSaudeImperfeito(IDCS,N,M,T,E):- demo(centro_saude(IDCS,N,M,T,E),de
 
 % Centro de Saude com telefone interdito
 centro_saude(7,"Hospital de Faro","Faro",xTProibidoCS,"hospital_faro@sns.pt").
+excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,M,xTProibidoCS,E).
 nulo(xTProibidoCS).
 
 % Invariantes de Conhecimento Imperfeito Interdito
@@ -585,6 +587,7 @@ atualizaStaffImperfeito(IDS,IDCS,N,E):- demo(staff(IDS,IDCS,N,E),desconhecido),
 
 % Staff com email interdito
 staff(11,2,"Ana",xEProibidoS).
+excecao(staff(IDS,IDCS,N,E)):- staff(IDS,IDCS,N,xEProibidoS).
 nulo(xEProibidoS).
 
 % Invariantes de Conhecimento Imperfeito Interdito
@@ -706,6 +709,7 @@ excecao(vacinacao_covid(3,10,17-02-2021,"astrazeneca",1)).
 
 % Vacinacao com vacina interdita
 vacinacao_covid(1,6,23-07-2021,xVP,1).
+excecao(vacinacao_covid(IDS,IDU,D,V,T)) :- vacinacao_covid(IDS,IDU,D,xVP,T).
 nulo(xVP).
 
 
