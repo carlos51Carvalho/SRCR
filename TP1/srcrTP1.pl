@@ -1107,6 +1107,8 @@ concatenar([H|T],L,F):- adicionar(H,N,F), concatenar(T,L,N).
 intersection(A,B,AnB):- subtract(A,B,AminusB),subtract(A,AminusB,K),sort(K,AnB).
 
 
-
+% ----------------------------------------------------------------------
+% Extensao do predicado remExcecoes: Lista --> {V,F} 
+% ----------------------------------------------------------------------
 remExcecoes([]).
 remExcecoes([H|T]):- involucao(H),remExcecoes(T).
