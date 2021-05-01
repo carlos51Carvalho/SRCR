@@ -15,6 +15,7 @@
 :- dynamic centro_saude/5.
 :- dynamic staff/4.
 :- dynamic vacinacao_covid/5.
+:- dynamic excecao/1.
 
 % ----------------------------------------------------------------------
 % Fases de Vacinação
@@ -173,27 +174,64 @@ utente(4,124123125,"Xavier",02-02-2000,"xavier@gmail.com",911232355,"alentejo","
 % Pertence a 2a fase - candidato
 utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","professor",["Insuficiencia_hepatica"],2).
 
-
-% Conhecimento Imperfeito
+% ----------------------------------------------------------------------
+%   	                Conhecimento Imperfeito
+% ----------------------------------------------------------------------
 
 -utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- nao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
                                         nao(excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS))).
 
-% Negação forte
+% ----------------------------------------------------------------------
+%                           Negação forte
+% ----------------------------------------------------------------------
+
 utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",xTU,"coimbra","sapateiro",["Diabetes"],3)
 -utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",963554145,"coimbra","sapateiro",["Diabetes"],3).
 
-% Incerto
+% ----------------------------------------------------------------------
+%                               Incerto
+% ----------------------------------------------------------------------
 
 % Número de Segurança Social desconhecido
-utente(7,xNSS,"Jaime",03-03-1986,"jaimefontes@gmail.com",917234567,"viseu","musico",["Colesterol_elevado"],3).
-excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,xNSS,N,DT,E,T,M,P,LDC,IDCS).
+utente(7,xNSSU,"Jaime",03-03-1986,"jaimefontes@gmail.com",917234567,"viseu","musico",["Colesterol_elevado"],3).
 
 % Número de telefone desconhecido
-utente(8,245789123,"Ruben",27-05-2002,"rubenvizela@gmail.com",xTEL,"aveiro","piloto",["Insuficiencia_cardiaca","Diabetes"],1).
-excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,xTEL,M,P,LDC,IDCS).
+utente(8,245789123,"Ruben",27-05-2002,"rubenvizela@gmail.com",xTELU,"aveiro","piloto",["Insuficiencia_cardiaca","Diabetes"],1).
 
-% Impreciso
+% Lista de doenças desconhecidas
+utente(23,255789123,"Marco",16-02-1998,"marcomarques@gmail.com",911888222,"aveiro","piloto",xLDCU,2).
+
+% Data de nascimento desconhecida
+utente(32,215779123,"Tony",xDTU,"tonycarreira@gmail.com",923888777,"beja","cantor",["Insuficiencia_cardiaca","Diabetes"],1).
+
+
+% Número de segurança social desconhecido
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,xNSSU,N,DT,E,T,M,P,LDC,IDCS).
+
+% Data de nascimento desconhecida
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,xDTU,E,T,M,P,LDC,IDCS).
+
+% Email de utente desconhecido
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,xEU,T,M,P,LDC,IDCS).
+
+% Telefone de utente desconhecido
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,xTELU,M,P,LDC,IDCS).
+
+% Morada de utente desconhecida
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,T,xMU,P,LDC,IDCS).
+
+% Profissão de utente desconhecida
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,T,M,xPU,LDC,IDCS).
+
+% Lista de doenças do utente desconhecida
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,T,M,P,xLDCU,IDCS).
+
+% Centro de saúde associado ao utente desconhecido
+excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)):- utente(ID,NSS,N,DT,E,T,M,P,LDC,xIDCSU).
+
+% ----------------------------------------------------------------------
+%                               Impreciso
+% ----------------------------------------------------------------------
 
 % Utente com dois números de telefone
 utente(9,123245333,"Alexandra",26-02-1997,"xanateixeira@gmail.com",{917234252,966745812},"lisboa","carpinteira",[],2).
@@ -205,7 +243,60 @@ utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,{"porto"
 excecao(utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,"porto","bombeiro",["Neoplasia_maligna"],3)).
 excecao(utente(10,125623223,"Bruno",13-08-1974,"brunolopes@gmail.com",932487634,"pacos de ferreira","bombeiro",["Neoplasia_maligna"],3)).
 
-% Interdito
+% ----------------------------------------------------------------------
+%             Atualização de Conhecimento Incerto/Impreciso
+% ----------------------------------------------------------------------
+
+% Atualizar utente com NSS desconhecido - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,xNSSU,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com data nascimento desconhecida - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,xDTU,E,T,M,P,LDC,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com email desconhecido - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,DT,xEU,T,M,P,LDC,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com telefone desconhecido - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,DT,E,xTELU,M,P,LDC,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com morada desconhecida - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,DT,E,T,xMU,P,LDC,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com profissão desconhecida - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,DT,E,T,M,xPU,LDC,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com lista de doenças desconhecida - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,DT,E,T,M,P,xLDCU,IDCS)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente com centro de saude associado desconhecido - conhecimento incerto
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),
+                                                        involucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,xIDCSU)),
+                                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% Atualizar utente - conhecimento impreciso
+atualizaUtenteImperfeito(ID,NSS,N,DT,E,T,M,P,LDC,IDCS):- demo(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS),desconhecido),
+                                        involucao(utente(ID,_,_,_,_,_,_,_,_,_)),
+                                        solucoes(excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)),(excecao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS))),R),
+                                        comprimento(R,N1), N1>0, remExcecoes(R),
+                                        evolucao(utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS)).
+
+% ----------------------------------------------------------------------
+%                               Interdito
+% ----------------------------------------------------------------------
 
 % Utente com Numero de Segurança Social desconhecido que não poderemos vir a saber
 utente(11,xNIFProibido,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1).
@@ -215,7 +306,6 @@ nulo(xNIFProibido).
 +utente(ID,NSS,N,DT,E,T,M,P,LDC,IDCS) :: (solucoes(NSS,(utente(11,NSS,"Susana",20-05-1984,"susanameireles@gmail.com",911575890,"vila_real","enfermeira",["Doenca_respiratoria"],1),nao(nulo(NSS))),R),
                                          comprimento(R,N1),
                                          N1==0).
-
 
 
 % ----------------------------------------------------------------------
@@ -276,32 +366,85 @@ centro_saude(1,"Hospital de Braga","Braga",253027000,"hospital_braga@sns.pt").
 centro_saude(2,"Hospital da Trofa Braga Norte","Braga",253027002,"hospital_trofa_braga@sns.pt").
 centro_saude(3,"Hospital de Sao Joao","Porto",225512100,"hospital_sao_joao@sns.pt").
 
-% Conhecimento Imperfeito
+% ----------------------------------------------------------------------
+%                      Conhecimento Imperfeito
+% ----------------------------------------------------------------------
 
 -centro_saude(IDCS,N,M,T,E):- nao(centro_saude(IDCS,N,M,T,E)),
                               nao(excecao(centro_saude(IDCS,N,M,T,E))).
 
+% ----------------------------------------------------------------------
 % Negação forte
+% ----------------------------------------------------------------------
+
 centro_saude(8,"Hospital de Coimbra","Coimbra",239400400,xECS).
 -centro_saude(8,"Hospital de Coimbra","Coimbra",239400400,"hospital_coimbra@sns.pt").
 
-% Conhecimento Incerto
+% ----------------------------------------------------------------------
+%                         Conhecimento Incerto
+% ----------------------------------------------------------------------
+
 % Centro de Saude com telefone desconhecido
 centro_saude(4,"Hospital de Aveiro","Aveiro",xTCS,"hospital_aveiro@sns.pt").
-excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,M,xTCS,E).
 
 % Centro de Saude com morada desconhecida
 centro_saude(5,"Hospital da Luz",xMCS,255787256,"hospital_da_luz@sns.pt").
+
+% Morada do centro de saúde desconhecido
 excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,xMCS,T,E).
 
-% Conhecimento Impreciso
-% Centro de saude com multiplos emails
+% Telefone do centro de saúde desconhecido
+excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,M,xTCS,E).
+
+% Email do centro de saúde desconhecido
+excecao(centro_saude(IDCS,N,M,T,E)):- centro_saude(IDCS,N,M,T,xECS).
+
+% ----------------------------------------------------------------------
+%                        Conhecimento Impreciso
+% ----------------------------------------------------------------------
+
+% Centro de saúde com multiplos emails
 centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,{"hospital_dos_brinquedos@sns.pt","hospital_brincadeiras@sns.pt"}).
 excecao(centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,"hospital_dos_brinquedos@sns.pt")).
 excecao(centro_saude(6,"Hospital dos Brinquedos","Viseu",232776244,"hospital_brincadeiras@sns.pt")).
 
+% Centro de saude com multiplos telefones
+centro_saude(9,"Hospital de Ponte da Barca","Ponte da Barca",{258480300,257470300},"hospital_da_barca@sns.pt").
+excecao(centro_saude(9,"Hospital de Ponte da Barca","Ponte da Barca",258480300,"hospital_da_barca@sns.pt")).
+excecao(centro_saude(9,"Hospital de Ponte da Barca","Ponte da Barca",257470300,"hospital_da_barca@sns.pt")).
 
-% Conhecimento Interdito
+% ----------------------------------------------------------------------
+%             Atualização de Conhecimento Incerto/Impreciso
+% ----------------------------------------------------------------------
+
+% Atualizar centro de saude com email desconhecido - conhecimento incerto
+atualizaCentroSaudeImperfeito(IDCS,N,M,T,E):- excecao(centro_saude(IDCS,N,M,T,E)),
+                                               involucao(centro_saude(IDCS,N,M,T,xECS)),
+                                               evolucao(centro_saude(IDCS,N,M,T,E)).
+
+
+% Atualizar centro de saude com telefone desconhecido - conhecimento incerto
+atualizaCentroSaudeImperfeito(IDCS,N,M,T,E):- excecao(centro_saude(IDCS,N,M,T,E)),
+                                               involucao(centro_saude(IDCS,N,M,xTCS,E)),
+                                               evolucao(centro_saude(IDCS,N,M,T,E)).
+
+% Atualizar centro de saude com morada desconhecida
+atualizaCentroSaudeImperfeito(IDCS,N,M,T,E):- excecao(centro_saude(IDCS,N,M,T,E)),
+                                               involucao(centro_saude(IDCS,N,xMCS,T,E)),
+                                               evolucao(centro_saude(IDCS,N,M,T,E)).
+
+% Atualizar centro de saude - conhecimento impreciso
+atualizaCentroSaudeImperfeito(IDCS,N,M,T,E):- demo(centro_saude(IDCS,N,M,T,E),desconhecido),
+                                        involucao(centro_saude(IDCS,_,_,_,_)),
+                                        solucoes(excecao(centro_saude(IDCS,N,M,T,E)),(excecao(centro_saude(IDCS,N,M,T,E))),R),
+                                        comprimento(R,N1), N1>0, remExcecoes(R),
+                                        evolucao(centro_saude(IDCS,N,M,T,E)).
+
+
+% ----------------------------------------------------------------------
+%                       Conhecimento Interdito
+% ----------------------------------------------------------------------
+
 % Centro de Saude com telefone interdito
 centro_saude(7,"Hospital de Faro","Faro",xTProibidoCS,"hospital_faro@sns.pt").
 nulo(xTProibidoCS).
@@ -367,38 +510,79 @@ staff(4,1,"Antonio","antonioalves@gmail.com").
 staff(5,2,"Ruben","rubenpteixeira@gmail.com").
 staff(6,3,"Julian","julianaribeiro@gmail.com").
 
-% Conhecimento Imperfeito
+
+% ----------------------------------------------------------------------
+%                       Conhecimento Imperfeito
+% ----------------------------------------------------------------------
 
 -staff(IDS,IDCS,N,E):- nao(staff(IDS,IDCS,N,E)),
                        nao(excecao(staff(IDS,IDCS,N,E))).
 
+% ----------------------------------------------------------------------
 % Negação forte
-staff(12,xSatIDCS,"Manuel","manuelsilva@gmail.com").
+% ----------------------------------------------------------------------
+
+staff(12,xSIDCS,"Manuel","manuelsilva@gmail.com").
 -staff(12,3,"Manuel","manuelsilva@gmail.com").
 
-% Conhecimento Incerto
+% ----------------------------------------------------------------------
+%                       Conhecimento Incerto
+% ----------------------------------------------------------------------
 
 % Staff com Email desconhecido
-staff(7,1,"Romeu",xES007).
-excecao(staff(IDS,IDCS,N,E)):- staff(IDS,IDCS,N,xES007).
+staff(7,1,"Romeu",xES).
 
 % Staff com Id de Centro de Saúde desconhecido
-staff(8,xIDCS008,"Julieta","julietasilva@gmail.com").
-excecao(staff(IDS,IDCS,N,E)):- staff(IDS,xIDCS008,N,E).
+staff(8,xSIDCS,"Julieta","julietasilva@gmail.com").
 
+% Centro de saúde no qual o staff trabalha desconhecido
+excecao(staff(IDS,IDCS,N,E)):- staff(IDS,xSIDCS,N,E).
 
-% Conhecimento Impreciso
+% Email do staff desconhecido
+excecao(staff(IDS,IDCS,N,E)):- staff(IDS,IDCS,N,xES).
+
+% ----------------------------------------------------------------------
+%                       Conhecimento Impreciso
+% ----------------------------------------------------------------------
+
 % Staff que trabalha em vários centros de saúde
 staff(9,[1,3],"Roberto","robertoalmeida@gmail.com").
-excecao(staff(9,IDCS,"Roberto","robertoalmeida@gmail.com")):- pertence(D,[1,2,3]).
+excecao(staff(9,1,"Roberto","robertoalmeida@gmail.com")).
+excecao(staff(9,2,"Roberto","robertoalmeida@gmail.com")).
+excecao(staff(9,3,"Roberto","robertoalmeida@gmail.com")).
 
 % Staff que tem vários emails
 staff(10,1,"Duarte",{"duarteferreira2@gmail.com","duarteferreira23@gmail.com"}).
 excecao(staff(10,1,"Duarte","duarteferreira2@gmail.com")).
 excecao(staff(10,1,"Duarte","duarteferreira23@gmail.com")).
 
+% ----------------------------------------------------------------------
+%             Atualização de Conhecimento Incerto/Impreciso
+% ----------------------------------------------------------------------
 
-% Conhecimento Interdito
+% Atualizar staff com email desconhecido - conhecimento incerto
+atualizaStaffImperfeito(IDS,IDCS,N,E):- excecao(staff(IDS,IDCS,N,E)),
+                                               involucao(staff(IDS,IDCS,N,xES)),
+                                               evolucao(staff(IDS,IDCS,N,E)).
+
+
+% Atualizar staff com centro de saude desconhecido - conhecimento incerto
+atualizaStaffImperfeito(IDS,IDCS,N,E):- excecao(staff(IDS,IDCS,N,E)),
+                                               involucao(staff(IDS,xSIDCS,N,E)),
+                                               evolucao(staff(IDS,IDCS,N,E)).
+
+
+% Atualizar staff - conhecimento impreciso
+atualizaStaffImperfeito(IDS,IDCS,N,E):- demo(staff(IDS,IDCS,N,E),desconhecido),
+                                        involucao(staff(IDS,_,_,_)),
+                                        solucoes(excecao(staff(IDS,IDCS,N,E)),(excecao(staff(IDS,IDCS,N,E))),R),
+                                        comprimento(R,N1), N1>0, remExcecoes(R),
+                                        evolucao(staff(IDS,IDCS,N,E)).
+
+% ----------------------------------------------------------------------
+%                       Conhecimento Interdito
+% ----------------------------------------------------------------------
+
 % Staff com email interdito
 staff(11,2,"Ana",xEProibidoS).
 nulo(xEProibidoS).
@@ -450,41 +634,64 @@ vacinacao_covid(3,5,23-03-2021,"pfizer",1).
 
 vacinacao_covid(2,2,12-12-2020,"pfizer",1).
 
+        % Conhecimento imperfeito
+vacinacao_covid(2,23,02-02-2021,"pfizer",1).
+vacinacao_covid(1,32,12-12-2020,"astrazeneca",1).
+
 % Vacinacao valida - pertence a ambas as fases
 
 vacinacao_covid(4,3,07-02-2021,"astrazeneca",1).
-
 
 % Vacinacao valida - pertence a primeira fase
 
 vacinacao_covid(2,2,12-2-2021,"pfizer",2).
 
 
-% Conhecimento Imperfeito
+% ----------------------------------------------------------------------
+%                       Conhecimento Imperfeito
+% ----------------------------------------------------------------------
 
 -vacinacao_covid(IDS,IDU,D,V,T):- nao(vacinacao_covid(IDS,IDU,D,V,T)),
                                   nao(excecao(vacinacao_covid(IDS,IDU,D,V,T))).
 
-% Negação forte
+
+% ----------------------------------------------------------------------
+%                           Negação forte
+% ----------------------------------------------------------------------
 vacinacao_covid(1,11,12-05-2021,xV,1).
 -vacinacao_covid(1,11,12-05-2021,"astrazeneca",1).
 
+% ----------------------------------------------------------------------
+%                        Conhecimento Incerto
+% ----------------------------------------------------------------------
 
-% Conhecimento Incerto
 % Vacinacao com vacina desconhecida
-vacinacao_covid(1,9,24-05-2021,xV,1).
-excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(IDS,IDU,D,xV,T).
+vacinacao_covid(1,9,24-05-2021,xVVC,1).
 
 % Vacinacao com staff desconhecido
-vacinacao_covid(xIDS,8,12-03-2021,"pfizer",1).
-excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(xIDS,IDU,D,V,T).
+vacinacao_covid(xIDSVC,8,12-03-2021,"pfizer",1).
+
+% Staff que vacinou desconhecido
+excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(xIDSVC,IDU,D,V,T).
+
+% Utente vacinado desconhecido
+excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(IDS,xIDUVC,D,V,T).
+
+% Vacina tomada desconhecida
+excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(IDS,IDU,D,xVVC,T).
+
+% Toma de vacina desconhecida
+excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(IDS,IDU,D,V,xTVC).
 
 
-% Conhecimento Impreciso
+% ----------------------------------------------------------------------
+%                       Conhecimento Impreciso
+% ----------------------------------------------------------------------
+
 % Vacinacao com vários utentes
-vacinacao_covid(1,{7,9,11},24-04-2021,"pfizer",1).
+vacinacao_covid(1,{4,7,11},24-04-2021,"pfizer",1).
+excecao(vacinacao_covid(1,4,24-04-2021,"pfizer",1)).
 excecao(vacinacao_covid(1,7,24-04-2021,"pfizer",1)).
-excecao(vacinacao_covid(1,9,24-04-2021,"pfizer",1)).
 excecao(vacinacao_covid(1,11,24-04-2021,"pfizer",1)).
 
 % Vacinacao com diversas vacinas
@@ -493,15 +700,19 @@ excecao(vacinacao_covid(3,10,17-02-2021,"pfizer",1)).
 excecao(vacinacao_covid(3,10,17-02-2021,"astrazeneca",1)).
 
 
-% Conhecimento Interdito
+% ----------------------------------------------------------------------
+%                       Conhecimento Interdito
+% ----------------------------------------------------------------------
+
 % Vacinacao com vacina interdita
 vacinacao_covid(1,6,23-07-2021,xVP,1).
 nulo(xVP).
 
+
 % Invariantes de Conhecimento Imperfeito Interdito
 +vacinacao_covid(IDS,IDU,D,V,T)::(solucoes(V,(vacinacao_covid(1,6,23-07-2021,V,1),nao(nulo(V))),R),
                                   comprimento(R,N),
-                                  N==1).
+                                  N==0).
 
 % ----------------------------------------------------------------------
 % Extensão do predicado showAllVacinacao 
@@ -890,3 +1101,8 @@ concatenar([H|T],L,F):- adicionar(H,N,F), concatenar(T,L,N).
 % ----------------------------------------------------------------------
 
 intersection(A,B,AnB):- subtract(A,B,AminusB),subtract(A,AminusB,K),sort(K,AnB).
+
+
+
+remExcecoes([]).
+remExcecoes([H|T]):- involucao(H),remExcecoes(T).
