@@ -185,7 +185,7 @@ utente(6,124123129,"Oliver",02-02-1958,"oliver@gmail.com",911232634,"braga","pro
 %                           Negação forte
 % ----------------------------------------------------------------------
 
-utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",xTU,"coimbra","sapateiro",["Diabetes"],3)
+utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",xTELU,"coimbra","sapateiro",["Diabetes"],3)
 -utente(20,255746880,"Tiago",07-04-1988,"tiagoalgarvio@gmail.com",963554145,"coimbra","sapateiro",["Diabetes"],3).
 
 % ----------------------------------------------------------------------
@@ -661,7 +661,7 @@ vacinacao_covid(2,2,12-2-2021,"pfizer",2).
 % ----------------------------------------------------------------------
 %                           Negação forte
 % ----------------------------------------------------------------------
-vacinacao_covid(1,11,12-05-2021,xV,1).
+vacinacao_covid(1,11,12-05-2021,xVVC,1).
 -vacinacao_covid(1,11,12-05-2021,"astrazeneca",1).
 
 % ----------------------------------------------------------------------
@@ -669,10 +669,10 @@ vacinacao_covid(1,11,12-05-2021,xV,1).
 % ----------------------------------------------------------------------
 
 % Vacinacao com vacina desconhecida
-vacinacao_covid(1,9,24-05-2021,xVVC,1).
+vacinacao_covid(2,9,24-05-2021,xVVC,1).
 
 % Vacinacao com staff desconhecido
-vacinacao_covid(xIDSVC,8,12-03-2021,"pfizer",1).
+vacinacao_covid(xIDSVC,6,12-03-2021,"pfizer",1).
 
 % Staff que vacinou desconhecido
 excecao(vacinacao_covid(IDS,IDU,D,V,T)):- vacinacao_covid(xIDSVC,IDU,D,V,T).
@@ -701,6 +701,39 @@ excecao(vacinacao_covid(1,11,24-04-2021,"pfizer",1)).
 vacinacao_covid(3,10,17-02-2021,{"pfizer","astrazeneca"},1).
 excecao(vacinacao_covid(3,10,17-02-2021,"pfizer",1)).
 excecao(vacinacao_covid(3,10,17-02-2021,"astrazeneca",1)).
+
+
+% ----------------------------------------------------------------------
+%             Atualização de Conhecimento Incerto/Impreciso
+% ----------------------------------------------------------------------
+
+% Atualizar vacinacao com vacina desconhecida - conhecimento incerto
+atualizaVacinacaoImperfeito(IDS,IDU,D,V,T):- excecao(vacinacao_covid(IDS,IDU,D,V,T)),
+                                            involucao(vacinacao_covid(IDS,IDU,D,xVVC,T)),
+                                            evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
+
+
+% Atualizar vacinacao com staff desconhecido - conhecimento incerto
+atualizaVacinacaoImperfeito(IDS,IDU,D,V,T):- excecao(vacinacao_covid(IDS,IDU,D,V,T)),
+                                            involucao(vacinacao_covid(xIDSVC,IDU,D,V,T)),
+                                            evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
+
+% Atualizar vacinacao com toma desconhecida - conhecimento incerto
+atualizaVacinacaoImperfeito(IDS,IDU,D,V,T):- excecao(vacinacao_covid(IDS,IDU,D,V,T)),
+                                            involucao(vacinacao_covid(IDS,IDU,D,V,xTVC)),
+                                            evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
+
+% Atualizar vacinacao com utente desconhecido - conhecimento incerto
+atualizaVacinacaoImperfeito(IDS,IDU,D,V,T):- excecao(vacinacao_covid(IDS,IDU,D,V,T)),
+                                            involucao(vacinacao_covid(IDS,xIDUVC,D,V,T)),
+                                            evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
+
+% Atualizar vacinacao - conhecimento impreciso
+atualizaVacinacaoImperfeito(IDS,IDCS,N,E):- demo(vacinacao_covid(IDS,IDU,D,V,T),desconhecido),
+                                        involucao(vacinacao_covid(IDS,IDU,D,V,T)),
+                                        solucoes(excecao(vacinacao_covid(IDS,IDU,D,V,T)),(excecao(vacinacao_covid(IDS,IDU,D,V,T))),R),
+                                        comprimento(R,N1), N1>0, remExcecoes(R),
+                                        evolucao(vacinacao_covid(IDS,IDU,D,V,T)).
 
 
 % ----------------------------------------------------------------------
